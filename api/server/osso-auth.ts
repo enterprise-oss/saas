@@ -52,7 +52,11 @@ function setupOsso({ server }) {
   server.use(passport.initialize());
   server.use(passport.session());
 
-  server.get('/auth/osso', passport.authenticate('osso'));
+  server.post('/auth/osso', (req, res, next) => {
+    const { email } = req.body;
+    const authenticator = passport.authenticate('osso', { email });
+    authenticator(req, res, next);
+  });
 
   server.get(
     '/auth/osso/callback',
